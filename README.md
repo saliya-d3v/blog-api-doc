@@ -3,7 +3,8 @@
 
 ## Tech Stack
 
-__Server:__Node, Express, MongoDB, Mongoose, JWT, Cloudinary
+- Server - TypeScript, Node, Express, MongoDB, Mongoose, JWT, Cloudinary
+- Automated API Testing - Postman
 
 # API Features
 
@@ -67,6 +68,42 @@ __Server:__Node, Express, MongoDB, Mongoose, JWT, Cloudinary
   - [Get Single post](#get-single-comment)
   - [Update post](#update-comment)
   - [Delete post](#delete-comment)
+
+## Run Locally
+
+Clone the project
+
+```bash
+  git clone https://link-to-project
+```
+
+Go to the project directory
+
+```bash
+  cd my-project
+```
+
+Install dependencies
+
+```bash
+  npm install
+```
+
+Start the server
+
+```bash
+  npm run dev
+```
+
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your .env file
+
+`MONGO_URI`
+`JWT_SECRET`
+`CLOUDINARY_CLOUD_NAME`
+`CLOUDINARY_API_KEY`
+`CLOUDINARY_API_SECRET`
 
 # API Authentication
 
@@ -186,16 +223,20 @@ GET /api/v1/users/unfollow/:id
 PUT /api/v1/users/update-password
 ```
 
-| Parameter        | Type     | Description         | Required |
-| :--------------- | :------- | :------------------ | :------- |
-| `authentication` | `string` | Your token          | yes      |
-| `password`       | `string` | Enter your password | yes      |
+| Parameter           | Type     | Description                   | Required |
+| :------------------ | :------- | :---------------------------- | :------- |
+| `authentication`    | `string` | Your token                    | yes      |
+| `oldPassword`       | `string` | Enter your old password       | yes      |
+| `newPassword`       | `string` | Enter your new password       | yes      |
+| `confirmPassword`   | `string` | Enter your new password again | yes      |
 
 Example request body:
 
 ```javascript
 {
-  "password":"value"
+  "oldPassword":"value",
+  "newPassword":"value",
+  "confirmPassword":"value"
 }
 ```
 
