@@ -9,10 +9,14 @@
 # API Features
 
 - Authentication & Authorization
+- User CRUD operations
+- Category CRUD operations
 - Post CRUD operations
-- Comment functionality
+- Comment CRUD operations
+- Profile photo upload
 - System blocking user if inactive for 30 days
 - Admin can block a user
+- Admin can unblock a blocked user
 - A user can block different users
 - A user who block another user cannot see his/her posts
 - Last date a post was created
@@ -25,10 +29,6 @@
 - Get posts created count
 - Get blocked counts
 - Get all users who views someone's profile
-- Admin can unblock a blocked user
-- Update password
-- Profile photo uploaded
-- A user can close his/her account
 
 # ENDPOINTS
 
@@ -39,35 +39,45 @@
 
 - [Users](#user-api-reference)
 
-  - [Get my profile](#get-my-profile)
-  - [Get all users](#get-all-users)
-  - [View a user profile Count](#view-a-user-profile)
-  - [Following a user](#following-a-user)
-  - [UnFollowing-a-user](#unfollowing-a-user)
-  - [Update user password](#update-user-password)
-  - [Update your profile](#update-your-profile)
-  - [Block another user](#block-user)
-  - [Unblock another user](#unblock-user)
-  - [Admin blocking a user](#admin-blocking-a-user)
-  - [Admin Unblocking a user](#admin-unblocking-a-user)
-  - [Delete your account](#delete-your-account)
+  - [Get User Profile](#get-user-profile)
+  - [Get All Users](#get-all-users)
   - [Upload Profile Photo](#upload-profile-photo)
+  - [Update User Profile](#update-user-profile)
+  - [Update User Password](#update-user-password)
+  - [View a User Profile](#view-a-user-profile)
+  - [Following a User](#following-a-user)
+  - [UnFollowing a User](#unfollowing-a-user)
+  - [Block Another User](#block-user)
+  - [Unblock Another User](#unblock-user)
+  - [Admin Blocking a User](#admin-blocking-a-user)
+  - [Admin Unblocking a User](#admin-unblocking-a-user)
+  - [Delete Your Account](#delete-your-account)
+
+- [Categories](#categories-api-reference)
+
+  - [Create Category](#create-category)
+  - [Get All Categories](#get-all-categories)
+  - [Get Single Category](#get-single-category)
+  - [Update Category](#update-category)
+  - [Delete Category](#delete-category)
 
 - [Posts](#posts-api-reference)
 
   - [Create Post](#create-post)
   - [Get All Posts](#get-all-posts)
   - [Get Single Post](#get-single-post)
-  - [Toggle Post like](#toggle-post-like)
-  - [Toggle Post dislike](#toggle-post-dislike)
   - [Update Post](#update-post)
+  - [Toggle Post Like](#toggle-post-like)
+  - [Toggle Post Dislike](#toggle-post-dislike)
   - [Delete Post](#delete-post)
 
 - [Comments](#comment-api-reference)
-  - [Create comment](#create-comment)
-  - [Get Single post](#get-single-comment)
-  - [Update post](#update-comment)
-  - [Delete post](#delete-comment)
+
+  - [Create Comment](#create-comment)
+  - [Get All Comments](#get-all-comments)
+  - [Get Single Comment](#get-single-comment)
+  - [Update Comment](#update-comment)
+  - [Delete Comment](#delete-comment)
 
 ## Run Locally
 
@@ -80,7 +90,7 @@ Clone the project
 Go to the project directory
 
 ```bash
-  cd my-project
+  cd node-blog
 ```
 
 Install dependencies
@@ -107,13 +117,13 @@ To run this project, you will need to add the following environment variables to
 
 # API Authentication
 
-Some endpoints may require authentication. for example, To create/delete/update a post, you need to register by your API client and obtain an access token.
+All endpoints except register & login, require authentication. For example, to get/create/update/delete a post, you need to register/login by your API client and obtain an access token.
 
-The endpoints that require authentication expect a bearer token sent in the `Authorization header`.
+The endpoints that require authentication expect a bearer token sent in the `Authorization` header.
 
 **Example**:
 
-`Authorization: Bearer YOUR TOKEN`
+`Authorization: Bearer YOUR_TOKEN`
 
 The request body needs to be in JSON format.
 
@@ -151,7 +161,6 @@ POST /api/v1/users/login
 
 | Parameter        | Type     | Description   | Required |
 | :--------------- | :------- | :------------ | :------- |
-| `authentication` | `string` | Your token    | no       |
 | `email`          | `string` | Your email    | yes      |
 | `password`       | `string` | Your password | yes      |
 
@@ -164,7 +173,7 @@ Example request body:
 }
 ```
 
-## **Get my profile**
+## **Get user profile**
 
 ```http
 GET /api/v1/users/profile
@@ -182,7 +191,64 @@ GET /api/v1/users
 
 | Parameter        | Type     | Description | Required |
 | :--------------- | :------- | :---------- | :------- |
-| `authentication` | `string` | Your token  | no       |
+| `authentication` | `string` | Your token  | yes      |
+
+## **Upload Profile Photo**
+
+```http
+POST /api/v1/users/profile-photo-upload
+```
+
+| Parameter        | Type     | Description     | Required |
+| :--------------- | :------- | :-------------- | :------- |
+| `authentication` | `string` | Your token      | yes      |
+| `profilePhoto`   | `string` | Image to upload | yes      |
+
+## **Update user profile**
+
+```http
+PUT /api/v1/users/:id
+```
+
+| Parameter        | Type     | Description           | Required |
+| :--------------- | :------- | :-------------------- | :------- |
+| `authentication` | `string` | Your token            | yes      |
+| `email`          | `string` | Enter your email      | no       |
+| `firstName`      | `string` | Enter your first name | no       |
+| `lastName`       | `string` | Enter your last name  | no       |
+
+Example request body:
+
+```javascript
+{
+  "email":"value",
+  "firstName":"value",
+  "lastName":"value",
+}
+```
+
+## **Update user password**
+
+```http
+PUT /api/v1/users/update-password
+```
+
+| Parameter           | Type     | Description                   | Required |
+| :------------------ | :------- | :---------------------------- | :------- |
+| `authentication`    | `string` | Your token                    | yes      |
+| `oldPassword`       | `string` | Enter your old password       | yes      |
+| `newPassword`       | `string` | Enter your new password       | yes      |
+| `confirmPassword`   | `string` | Enter your new password again | yes      |
+
+Example request body:
+
+```javascript
+{
+  "oldPassword":"value",
+  "newPassword":"value",
+  "confirmPassword":"value"
+}
+```
 
 ## **View a user profile**
 
@@ -216,52 +282,6 @@ GET /api/v1/users/unfollow/:id
 | :--------------- | :------- | :-------------------------------- | :------- |
 | `authentication` | `string` | Your token                        | yes      |
 | `id`             | `string` | ID of the user you want to follow | yes      |
-
-## **Update user password**
-
-```http
-PUT /api/v1/users/update-password
-```
-
-| Parameter           | Type     | Description                   | Required |
-| :------------------ | :------- | :---------------------------- | :------- |
-| `authentication`    | `string` | Your token                    | yes      |
-| `oldPassword`       | `string` | Enter your old password       | yes      |
-| `newPassword`       | `string` | Enter your new password       | yes      |
-| `confirmPassword`   | `string` | Enter your new password again | yes      |
-
-Example request body:
-
-```javascript
-{
-  "oldPassword":"value",
-  "newPassword":"value",
-  "confirmPassword":"value"
-}
-```
-
-## **Update your profile**
-
-```http
-PUT /api/v1/users/:id
-```
-
-| Parameter        | Type     | Description           | Required |
-| :--------------- | :------- | :-------------------- | :------- |
-| `authentication` | `string` | Your token            | yes      |
-| `email`          | `string` | Enter your email      | no       |
-| `firstName`      | `string` | Enter your first name | no       |
-| `lastName`       | `string` | Enter your last name  | no       |
-
-Example request body:
-
-```javascript
-{
-  "email":"value",
-  "firstName":"value",
-  "lastName":"value",
-}
-```
 
 ## **Block user**
 
@@ -317,16 +337,78 @@ DELETE /api/v1/users/delete-account
 | :--------------- | :------- | :---------- | :------- |
 | `authentication` | `string` | Your token  | yes      |
 
-## **Upload Profile Photo**
+# **Categories API Reference**
+
+## **Create Category**
 
 ```http
-POST /api/v1/users/profile-photo-upload
+POST /api/v1/categories
 ```
 
-| Parameter        | Type     | Description     | Required |
-| :--------------- | :------- | :-------------- | :------- |
-| `authentication` | `string` | Your token      | yes      |
-| `profilePhoto`   | `string` | Image to upload | yes      |
+| Parameter        | Type     | Description    | Required |
+| :--------------- | :------- | :------------- | :------- |
+| `authentication` | `string` | Your token     | yes      |
+| `title`          | `string` | Category title | yes      |
+
+Example request body:
+
+```javascript
+{
+  "title":"value",
+}
+```
+
+## **Get All Categories**
+
+```http
+GET /api/v1/categories
+```
+
+| Parameter        | Type     | Description        | Required |
+| :--------------- | :------- | :----------------- | :------- |
+| `authentication` | `string` | Your token         | yes      |
+
+## **Get Single Category**
+
+```http
+GET /api/v1/categories/:id
+```
+
+| Parameter        | Type     | Description        | Required |
+| :--------------- | :------- | :----------------- | :------- |
+| `authentication` | `string` | Your token         | yes      |
+| `id`             | `string` | ID of the category | yes      |
+
+## **Update Category**
+
+```http
+PUT /api/v1/categories/:id
+```
+
+| Parameter        | Type     | Description        | Required |
+| :--------------- | :------- | :----------------- | :------- |
+| `authentication` | `string` | Your token         | yes      |
+| `id`             | `string` | ID of the category | yes      |
+| `title`          | `string` | Category title     | yes      |
+
+Example request body:
+
+```javascript
+{
+  "title":"value",
+}
+```
+
+## **Delete Category**
+
+```http
+DELETE /api/v1/categories/:id
+```
+
+| Parameter        | Type     | Description        | Required |
+| :--------------- | :------- | :----------------- | :------- |
+| `authentication` | `string` | Your token         | yes      |
+| `id`             | `string` | ID of the category | yes      |
 
 # **Posts API Reference**
 
@@ -363,7 +445,7 @@ GET /api/v1/posts
 
 | Parameter        | Type     | Description | Required |
 | :--------------- | :------- | :---------- | :------- |
-| `authentication` | `string` | Your token  | no       |
+| `authentication` | `string` | Your token  | yes      |
 
 ## **Get Single Post**
 
@@ -375,6 +457,32 @@ GET /api/v1/posts/:id
 | :--------------- | :------- | :------------- | :------- |
 | `authentication` | `string` | Your token     | yes      |
 | `id`             | `string` | ID of the post | yes      |
+
+## **Update Post**
+
+```http
+PATCH /api/v1/posts/:id
+```
+
+| Parameter        | Type     | Description             | Required |
+| :--------------- | :------- | :---------------------- | :------- |
+| `authentication` | `string` | Your token              | yes      |
+| `id`             | `string` | ID of the post          | yes      |
+| `title`          | `string` | Title of the post       | no       |
+| `description`    | `string` | Description of the post | no       |
+| `category`       | `string` | Category of the post    | no       |
+| `photo`          | `string` | Photo of the post       | no       |
+
+Example request body:
+
+```javascript
+{
+  "title":"value",
+  "description":"value",
+  "category":"value",
+  "photo":"photo",
+}
+```
 
 ## **Toggle Post like**
 
@@ -398,32 +506,6 @@ GET /api/v1/posts/dislikes/:id
 | `authentication` | `string` | Your token     | yes      |
 | `id`             | `string` | ID of the post | yes      |
 
-## **Update Post**
-
-```http
-PUT /api/v1/posts/:id
-```
-
-| Parameter        | Type     | Description             | Required |
-| :--------------- | :------- | :---------------------- | :------- |
-| `authentication` | `string` | Your token              | yes      |
-| `id`             | `string` | ID of the post          | yes      |
-| `title`          | `string` | title of the post       | yes      |
-| `description`    | `string` | description of the post | yes      |
-| `category`       | `string` | category of the post    | yes      |
-| `photo`          | `string` | photo of the post       | yes      |
-
-Example request body:
-
-```javascript
-{
-  "title":"value",
-  "description":"value",
-  "category":"value",
-  "photo":"photo",
-}
-```
-
 ## **Delete Post**
 
 ```http
@@ -440,29 +522,36 @@ DELETE /api/v1/posts/:id
 ## **Create Comment**
 
 ```http
-POST /api/v1/comments/:id
+POST /api/v1/comments
 ```
 
 | Parameter        | Type     | Description    | Required |
 | :--------------- | :------- | :------------- | :------- |
 | `authentication` | `string` | Your token     | yes      |
-| `id`             | `string` | ID of the post | yes      |
+| `content`        | `string` | Comment        | yes      |
 
-## **Get Single Comment**
+Example request body:
+
+```javascript
+{
+  "content":"value",
+}
+```
+
+## **Get All Comments**
 
 ```http
-GET /api/v1/comments/:id
+GET /api/v1/comments
 ```
 
 | Parameter        | Type     | Description       | Required |
 | :--------------- | :------- | :---------------- | :------- |
 | `authentication` | `string` | Your token        | yes      |
-| `id`             | `string` | ID of the comment | yes      |
 
-## **Delete Comment**
+## **Get Single Comment**
 
 ```http
-DELETE /api/v1/comments/:id
+GET /api/v1/comments/:id
 ```
 
 | Parameter        | Type     | Description       | Required |
@@ -476,7 +565,27 @@ DELETE /api/v1/comments/:id
 PUT /api/v1/comments/:id
 ```
 
-| Parameter        | Type     | Description    | Required |
-| :--------------- | :------- | :------------- | :------- |
-| `authentication` | `string` | Your token     | yes      |
-| `id`             | `string` | ID of the post | yes      |
+| Parameter        | Type     | Description       | Required |
+| :--------------- | :------- | :---------------- | :------- |
+| `authentication` | `string` | Your token        | yes      |
+| `id`             | `string` | ID of the comment | yes      |
+| `content`        | `string` | Comment           | yes      |
+
+Example request body:
+
+```javascript
+{
+  "content":"value",
+}
+```
+
+## **Delete Comment**
+
+```http
+DELETE /api/v1/comments/:id
+```
+
+| Parameter        | Type     | Description       | Required |
+| :--------------- | :------- | :---------------- | :------- |
+| `authentication` | `string` | Your token        | yes      |
+| `id`             | `string` | ID of the comment | yes      |
